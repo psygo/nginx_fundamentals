@@ -1,5 +1,7 @@
 # nginx
 
+[NGINX Fundamentals: High Performance Servers from Scratch | Udemy](https://www.udemy.com/course/nginx-fundamentals/)
+
 ## About NGINX
 
 - Developed by Igor Sysoev in 2005 out of frustrations with Apache.
