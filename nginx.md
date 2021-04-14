@@ -29,3 +29,72 @@ The 2 main configuration terms:
 - `Context`
     - Scope.
 - `Directive`
+
+### A Simple Example
+
+```nginx
+events {}
+
+http {
+  types {
+    text/html html;
+    text/css css;
+  }
+
+  server {
+    listen 80;
+    server_name 167.99.93.26;
+
+    root /sites/demo;
+  }
+
+  # Prefix match
+  # Equals match with `=`
+  # Regex match (with the pcre library) with `~`
+  # E.g.: `~* /greet[0-9]`
+  # Regex has higher priority. But you can override this with `^`
+  location /greet {
+    return 200 'Hello from NGINX greet location'
+  }
+
+  # Variables can be strings, integers or booleans
+  set $weekend 'No';
+
+  # Conditional Example
+  # Check static API key
+  if ($arg_apikey != 1234) {
+    return 401 "Incorrect API key"
+  }
+
+  if ($date_local ~ 'Saturday|Sunday') {
+    set $weekend 'Yes';
+  }
+
+  # An example of variable usage
+  location /inspect {
+    return 200 '$host\n$uri\n$args'
+    # Or 'Name: $arg_name';
+  }
+
+  # Redirection example
+  location /logo {
+    return 307 /thumb.png;
+  }
+
+  # Rewrites are done internally only (the URL is the same to the user)
+  # Requires more resources
+  rewrite ^/user/\w+ /greet/$1;
+
+  # Tries files sequentially
+  try_files /thumb.png /greet;
+}
+```
+
+You could also replace the manual insertion of types with `include mime.types`.
+
+Priority:
+
+1. Exact match
+1. Preferential Prefix Match
+1. Regex Match
+1. Prefix Match
